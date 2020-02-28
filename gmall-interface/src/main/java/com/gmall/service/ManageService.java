@@ -1,9 +1,6 @@
 package com.gmall.service;
 
-import com.gmall.bean.BaseAttrInfo;
-import com.gmall.bean.BaseCatalog1;
-import com.gmall.bean.BaseCatalog2;
-import com.gmall.bean.BaseCatalog3;
+import com.gmall.bean.*;
 
 import java.util.List;
 
@@ -24,4 +21,17 @@ public interface ManageService {
     void saveAttrInfo(BaseAttrInfo baseAttrInfo);
     //选中准修改数据 ， 根据该attrId 去查找AttrInfo，该对象下 List<BaseAttrValue>
     BaseAttrInfo getAttrInfo(String attrId);
+    // 查询基本销售属性表
+    List<BaseSaleAttr> getBaseSaleAttrList();
+    //保存spu
+    public void saveSpuInfo(SpuInfo spuInfo);
+    //  根据三级id获取spu
+    List<SpuInfo> getSpuList(String catalog3Id);
+
+    // 根据spuId获取spuImage中的所有图片列表
+    List<SpuImage> getSpuImageList(String spuId);
+    //  根据三级id获取销售属性
+    List<SpuSaleAttr> getSpuSaleAttrList(String spuId);
+    //保存sku
+    void saveSkuInfo(SkuInfo skuInfo);
 }

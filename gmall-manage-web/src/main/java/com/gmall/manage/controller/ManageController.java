@@ -31,9 +31,10 @@ public class ManageController {
         List<BaseCatalog3> catalog3 = manageService.getCatalog3(catalog2Id);
         return catalog3;
     }
-
+    //根据三级分类id获取平台属性
     @GetMapping("attrInfoList")
     public List<BaseAttrInfo> attrInfoList(String catalog3Id){
+
         return manageService.getAttrList(catalog3Id);
     }
 
@@ -51,5 +52,42 @@ public class ManageController {
     public List<BaseAttrValue> getAttrValueList(String attrId){
         BaseAttrInfo attrInfo = manageService.getAttrInfo(attrId);
         return attrInfo.getAttrValueList();
+    }
+
+    /**
+     * 获取基本销售属性
+     * @return
+     */
+    @PostMapping("baseSaleAttrList")
+    public List<BaseSaleAttr> getBaseSaleAttrList(){
+        return   manageService.getBaseSaleAttrList();
+    }
+    // 保存
+    @PostMapping("saveSpuInfo")
+    public String saveSpuInfo(@RequestBody SpuInfo spuInfo){
+        manageService.saveSpuInfo(spuInfo);
+        return "success";
+    }
+    //  根据三级id获取spu
+    @GetMapping("spuList")
+    public List<SpuInfo> getSpuList(String catalog3Id){
+        List<SpuInfo> spuList = manageService.getSpuList(catalog3Id);
+        return spuList;
+    }
+
+    /**
+     * 根据spuId获取图片
+     * @param spuId
+     * @return
+     */
+    @GetMapping("spuImageList")
+    public List<SpuImage> spuImageList(String spuId){
+        return   manageService.getSpuImageList(spuId);
+    }
+
+    @GetMapping("spuSaleAttrList")
+    public List<SpuSaleAttr> getspuSaleAttrList(String spuId){
+        List<SpuSaleAttr> spuSaleAttrList = manageService.getSpuSaleAttrList(spuId);
+        return  spuSaleAttrList;
     }
 }

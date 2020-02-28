@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/gmall-order-web/pom.xml" />
         <option value="$PROJECT_DIR$/gmall-manage-web/pom.xml" />
         <option value="$PROJECT_DIR$/gmall-manage-service/pom.xml" />
+        <option value="$PROJECT_DIR$/fastdfs-client-java/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
@@ -16,4 +17,8 @@
       </set>
     </option>
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/gmall-manage-web/src/main/resources/tracker.conf" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
 </project>
