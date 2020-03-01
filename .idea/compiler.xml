@@ -11,6 +11,9 @@
         <module name="gmall-bean" />
         <module name="gmall-common-util" />
         <module name="gmall-interface" />
+        <module name="gmall-item-web" />
+        <module name="gmall-list-service" />
+        <module name="gmall-list-web" />
         <module name="gmall-manage-service" />
         <module name="gmall-manage-web" />
         <module name="gmall-order-web" />
@@ -24,6 +27,9 @@
       <module name="gmall-bean" target="1.8" />
       <module name="gmall-common-util" target="1.8" />
       <module name="gmall-interface" target="1.8" />
+      <module name="gmall-item-web" target="1.8" />
+      <module name="gmall-list-service" target="1.8" />
+      <module name="gmall-list-web" target="1.8" />
       <module name="gmall-manage-service" target="1.8" />
       <module name="gmall-manage-web" target="1.8" />
       <module name="gmall-order-web" target="1.8" />

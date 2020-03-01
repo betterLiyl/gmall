@@ -2,9 +2,12 @@ package com.gmall.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.gmall.bean.*;
+import com.gmall.service.ListService;
 import com.gmall.service.ManageService;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @RestController
@@ -13,7 +16,8 @@ public class ManageController {
 
     @Reference
     ManageService manageService;
-
+    @Reference
+    ListService listService;
     @PostMapping("getCatalog1")
     public List<BaseCatalog1> getCatalog1(){
         List<BaseCatalog1> catalog1 = manageService.getCatalog1();
@@ -90,4 +94,24 @@ public class ManageController {
         List<SpuSaleAttr> spuSaleAttrList = manageService.getSpuSaleAttrList(spuId);
         return  spuSaleAttrList;
     }
+
+    /**
+     * 通过skuId将skuInfo存入es中
+     * @param skuId
+     */
+    @PostMapping("onSale")
+    public void onSale(@RequestParam("skuId")String skuId){
+        SkuInfo skuInfo = manageService.skuInfo(skuId);
+        SkuLsInfo skuLsInfo = new SkuLsInfo();
+        // 属性拷贝
+        try {
+            BeanUtils.copyProperties(skuLsInfo,skuInfo);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        listService.saveSkuInfo(skuLsInfo);
+    }
+
 }

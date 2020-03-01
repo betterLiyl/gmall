@@ -3,6 +3,7 @@ package com.gmall.service;
 import com.gmall.bean.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ManageService {
     //查询一级分类
@@ -34,4 +35,11 @@ public interface ManageService {
     List<SpuSaleAttr> getSpuSaleAttrList(String spuId);
     //保存sku
     void saveSkuInfo(SkuInfo skuInfo);
+
+    //用于显示商品详情 查询sku
+    SkuInfo skuInfo(String skuId);
+    //用商品详情 显示当前商品的销售属性和值，并标红
+    List<SpuSaleAttr> getSpuSaleAttrListCheckBySku(SkuInfo skuInfo);
+    //切换销售属性值时，得到对应sku
+    public Map getSkuValueIdsMap(String spuId);
 }
