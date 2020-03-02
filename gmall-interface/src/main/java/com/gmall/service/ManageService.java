@@ -17,7 +17,8 @@ public interface ManageService {
 
     //根据三级分类id查询平台属性
     public List<BaseAttrInfo> getAttrList(String catalog3Id);
-
+    //根据属性值ids查询平台属性
+    List<BaseAttrInfo> getAttrList(List<String> attrValueIdList);
     // 新增平台属性
     void saveAttrInfo(BaseAttrInfo baseAttrInfo);
     //选中准修改数据 ， 根据该attrId 去查找AttrInfo，该对象下 List<BaseAttrValue>

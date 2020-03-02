@@ -6,6 +6,7 @@ import com.gmall.bean.*;
 import com.gmall.manage.mapper.*;
 import com.gmall.service.ManageService;
 import com.gmall.util.RedisUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -89,6 +90,13 @@ public class ManageServiceImpl implements ManageService {
         return baseAttrInfoListByCatalog3Id;
     }
 
+    @Override
+    public List<BaseAttrInfo> getAttrList(List<String> attrValueIdList) {
+        String attrValueIds = StringUtils.join(attrValueIdList.toArray(), ",");
+        List<BaseAttrInfo> baseAttrInfoList = baseAttrInfoMapper.getBaseAttrInfoListByValueIds(attrValueIds);
+        return baseAttrInfoList;
+
+    }
     @Override
     public void saveAttrInfo(BaseAttrInfo baseAttrInfo) {
         //如果有主键就进行更新，如果没有就插入

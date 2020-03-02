@@ -3,10 +3,7 @@ package com.gmall.bean;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 @Data
 @NoArgsConstructor
@@ -19,5 +16,7 @@ public class BaseAttrValue implements Serializable {
     private String valueName;
     @Column
     private String attrId;
+    @Transient
+    private String urlParam;
 }
 

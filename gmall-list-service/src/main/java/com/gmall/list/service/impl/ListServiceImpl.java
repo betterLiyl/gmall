@@ -5,11 +5,9 @@ import com.gmall.bean.SkuLsInfo;
 import com.gmall.bean.SkuLsParams;
 import com.gmall.bean.SkuLsResult;
 import com.gmall.service.ListService;
+import com.gmall.util.RedisUtil;
 import io.searchbox.client.JestClient;
-import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
+import io.searchbox.core.*;
 import io.searchbox.core.search.aggregation.MetricAggregation;
 import io.searchbox.core.search.aggregation.TermsAggregation;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -22,6 +20,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +31,8 @@ public class ListServiceImpl implements ListService{
 
     @Autowired
     JestClient jestClient;
-
+    @Autowired
+    RedisUtil redisUtil;
     public static final String ES_INDEX="gmall0401_sku_info";
 
     public static final String ES_TYPE="_doc";
@@ -64,6 +64,35 @@ public class ListServiceImpl implements ListService{
 
         return skuLsResult;
     }
+
+    //更新热度评分
+    @Override
+    public void incrHotScore(String skuId){
+        Jedis jedis = redisUtil.getJedis();
+        int timesToEs=10;
+        Double hotScore = jedis.zincrby("hotScore", 1, "skuId:" + skuId);
+        if(hotScore%timesToEs==0){
+            updateHotScore(skuId,  Math.round(hotScore));
+        }
+
+    }
+    //更新es的热点评分
+    private void updateHotScore(String skuId,Long hotScore){
+        String updateJson="{\n" +
+                "   \"doc\":{\n" +
+                "     \"hotScore\":"+hotScore+"\n" +
+                "   }\n" +
+                "}";
+
+        Update update = new Update.Builder(updateJson).index("gmall_sku_info").type("_doc").id(skuId).build();
+        try {
+            jestClient.execute(update);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     //构造查询DSL
     public  String makeQueryStringForSearch(SkuLsParams skuLsParams){
         // 创建查询bulid
