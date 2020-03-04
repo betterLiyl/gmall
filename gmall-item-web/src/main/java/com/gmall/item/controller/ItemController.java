@@ -2,6 +2,7 @@ package com.gmall.item.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.gmall.annotation.LoginRequire;
 import com.gmall.bean.SkuInfo;
 import com.gmall.bean.SpuSaleAttr;
 import com.gmall.service.ListService;
@@ -23,6 +24,7 @@ public class ItemController {
     @Reference
     ListService listService;
     @GetMapping("{skuId}.html")
+    //@LoginRequire
     public String item(@PathVariable("skuId") String skuId, HttpServletRequest request){
         SkuInfo skuInfo = manageService.skuInfo(skuId);
         request.setAttribute("skuInfo",skuInfo);

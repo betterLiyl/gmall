@@ -22,7 +22,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com..gmall</groupId>
+			<groupId>com.gmall</groupId>
 			<artifactId>gmall-web-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
