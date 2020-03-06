@@ -9,6 +9,7 @@ import com.gmall.service.CartService;
 import com.gmall.service.ManageService;
 import com.gmall.service.OrderService;
 import com.gmall.service.UserInfoService;
+import com.gmall.util.HttpClientUtil;
 import org.apache.commons.lang3.time.DateUtils;
 import org.assertj.core.util.DateUtil;
 import org.springframework.stereotype.Controller;
@@ -19,8 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 @Controller
 public class OrderController {
@@ -30,7 +35,7 @@ public class OrderController {
     @Reference
     ManageService manageService;
     @Reference
-    private CartService cartService;
+    CartService cartService;
     @Reference
     OrderService orderService;
     @GetMapping("trade")
@@ -84,10 +89,45 @@ public class OrderController {
             SkuInfo skuInfo = manageService.skuInfo(orderDetail.getSkuId());
             orderDetail.setImgUrl(skuInfo.getSkuDefaultImg());
             orderDetail.setSkuName(skuInfo.getSkuName());
+
+            //验价
+            if(!orderDetail.getOrderPrice().equals(skuInfo.getPrice())){
+                request.setAttribute("errMsg","价格发生改动，请重新下单！");
+                return "tradeFail";
+            }
+        }
+        //验库存 使用多线程
+        List<OrderDetail> errList= Collections.synchronizedList(new ArrayList<>());
+        Stream<CompletableFuture<String>> completableFutureStream = orderDetailList.stream().map(orderDetail ->
+                CompletableFuture.supplyAsync(() -> checkSkuNum(orderDetail)).whenComplete((hasStock, ex) -> {
+                    if (hasStock.equals("0")) {
+                        errList.add(orderDetail);
+                    }
+                })
+        );
+        CompletableFuture[] completableFutures = completableFutureStream.toArray(CompletableFuture[]::new);
+
+        CompletableFuture.allOf(completableFutures).join();
+
+        if(errList.size()>0){
+            StringBuffer errStingbuffer=new StringBuffer();
+            for (OrderDetail orderDetail : errList) {
+                errStingbuffer.append("商品："+orderDetail.getSkuName()+"库存暂时不足！");
+            }
+            request.setAttribute("errMsg",errStingbuffer.toString());
+            return  "tradeFail";
         }
         // 保存
-         orderService.saveOrder(orderInfo);
+        String orderId = orderService.saveOrder(orderInfo);
+        //删除购物车
+        //cartService.
         // 重定向
-        return "redirect://payment.gmall.com/index";
+        return "redirect://payment.gmall.com/index?orderId="+orderId;
+    }
+
+    //调用库存模块
+    public String checkSkuNum(OrderDetail orderDetail){
+        String hasStock = HttpClientUtil.doGet("http://www.gware.com/hasStock?skuId=" + orderDetail.getSkuId() + "&num=" + orderDetail.getSkuNum());
+        return  hasStock;
     }
 }
