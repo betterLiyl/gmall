@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.gmall.bean.OrderDetail;
 import com.gmall.bean.OrderInfo;
+import com.gmall.enums.OrderStatus;
 import com.gmall.enums.ProcessStatus;
 import com.gmall.order.mapper.OrderDetailMapper;
 import com.gmall.order.mapper.OrderInfoMapper;
@@ -112,6 +113,15 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public List<OrderInfo> getUnpaidOrderList() {
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOrderStatus(OrderStatus.UNPAID);
+        List<OrderInfo> unpaidOrderList = orderInfoMapper.select(orderInfo);
+        return unpaidOrderList;
+    }
+
 
     public String initWareOrder(String orderId){
         OrderInfo orderInfo = getOrderInfo(orderId);

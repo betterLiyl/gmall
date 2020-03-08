@@ -3,6 +3,8 @@ package com.gmall.service;
 import com.gmall.bean.OrderInfo;
 import com.gmall.enums.ProcessStatus;
 
+import java.util.List;
+
 public interface OrderService {
     String saveOrder(OrderInfo orderInfo);
     OrderInfo getOrderInfo(String orderId);
@@ -14,4 +16,7 @@ public interface OrderService {
     void updateOrderStatus(String orderId, ProcessStatus paid);
 
     void sendOrderStatus(String orderId);
+
+
+    List<OrderInfo> getUnpaidOrderList();
 }
